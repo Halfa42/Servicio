@@ -1,0 +1,585 @@
+/*=============================================================
+  responsive.css — Correcciones y mejoras responsivas globales
+  Uso Didáctico de las TICs | CVA
+  Última modificación: 2026
+=============================================================*/
+
+/* ─── 1. MEDIOS: imágenes, videos e iframes ─────────────────
+   Elimina dimensiones fijas heredadas de atributos HTML
+   y los hace fluidos en todos los tamaños de pantalla.
+──────────────────────────────────────────────────────────── */
+
+img {
+  max-width: 100%;          /* nunca rebasa el contenedor */
+  height: auto;             /* preserva aspecto al escalar */
+  display: block;
+}
+
+/* Tope global para imágenes de contenido dentro de tarjetas: evita que
+   imágenes con tamaño natural enorme ocupen toda la pantalla. */
+.card img:not([class*="logo"]):not([class*="icon"]):not(.no-cap) {
+  max-width: 420px;
+  max-height: 320px;
+  object-fit: contain;
+}
+
+/* Imágenes inline en parrafos/listas (iconos/logos chicos). */
+.card p img,
+.card li img,
+.card td img,
+.card span img {
+  max-width: 220px;
+  max-height: 160px;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+/* Si la imagen es la unica hija del <p> (es un bloque, no inline con
+   texto), se trata como imagen suelta y respeta el tope general. */
+.card p > img:only-child,
+.card p > a:only-child > img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 360px;
+  max-height: 260px;
+}
+
+/* Imágenes inline pequeñas (íconos dentro de texto) */
+p img, li img, td img, span img {
+  display: inline;
+  vertical-align: middle;
+}
+
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+iframe {
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+/* ─── 2. CONTENEDOR PRINCIPAL ────────────────────────────────
+   Margen estándar consistente en todas las páginas.
+──────────────────────────────────────────────────────────── */
+
+.page-container .main-content {
+  padding: 80px 20px 20px 20px;
+}
+
+@media only screen and (max-width: 768px) {
+  .page-container .main-content {
+    padding: 72px 12px 12px 12px;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .page-container .main-content {
+    padding: 80px 30px 30px 30px;
+  }
+}
+
+/* ─── 3. CARD HORIZONTAL (portada de sección) ────────────────
+   En escritorio: imagen a la izquierda, texto a la derecha.
+   En móvil: imagen arriba, texto debajo (apilado).
+──────────────────────────────────────────────────────────── */
+
+.card-horizon {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card-horizon .image-container {
+  min-height: 220px;
+  flex-shrink: 0;
+}
+
+@media only screen and (max-width: 768px) {
+  .card-horizon {
+    flex-direction: column;
+  }
+  .card-horizon .image-container {
+    width: 100% !important;   /* anula col-md-* */
+    min-height: 200px;
+  }
+  .card-horizon .image-container .background-holder {
+    min-height: 200px;
+  }
+  /* El texto ocupa todo el ancho en móvil */
+  .card-horizon .container-fluid .col-md-7,
+  .card-horizon .container-fluid .col-md-9 {
+    max-width: 100%;
+    flex: 0 0 100%;
+    margin-left: 0 !important;
+  }
+}
+
+/* background-holder siempre cubrirá su contenedor */
+.background-holder {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  height: 100%;
+  min-height: 220px;
+}
+
+/* ─── 4. BARRA LATERAL EN MÓVIL ──────────────────────────────
+   Overlay oscuro al abrir el menú lateral en pantallas pequeñas.
+──────────────────────────────────────────────────────────── */
+
+@media only screen and (max-width: 992px) {
+  /* El menú se superpone sobre el contenido */
+  .side-nav {
+    z-index: 1001;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.4);
+  }
+
+  /* Overlay oscuro detrás del menú abierto */
+  .is-collapsed .side-nav-overlay {
+    display: block;
+  }
+
+  .side-nav-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+  }
+}
+
+/* ─── 5. TABS / PESTAÑAS ─────────────────────────────────────
+   Desktop conserva su tamaño original. Hover en escritorio
+   rellena con el color del tema (mismo efecto que .active).
+   Mobile/tablet: envuelven en varias líneas con tamaño reducido.
+──────────────────────────────────────────────────────────── */
+
+/* Hover/focus en escritorio: rellena con theme-color y texto blanco */
+.nav > li.nav-item > a.nav-link:hover,
+.nav > li.nav-item > a.nav-link:focus {
+  color: #ffffff !important;
+  border-color: var(--theme-color) !important;
+  box-shadow: 0 0 40px 40px var(--theme-color) inset, 0 0 0 0 var(--theme-color) !important;
+  transition: all 200ms ease-in-out;
+}
+
+/* Botones .button (REVISAR, etc.) más estrechos en móvil */
+@media only screen and (max-width: 767px) {
+  .button {
+    padding: 1em 2em !important;
+    font-size: 0.95rem !important;
+    margin: 16px auto !important;
+    max-width: 280px;
+    width: auto !important;
+  }
+}
+
+/* Mobile/tablet: tabs envuelven a varias líneas, tamaño reducido. */
+@media only screen and (max-width: 767px) {
+  .nav-tabs,
+  .tab-info .nav-tabs,
+  .center-tabs .nav-tabs {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    overflow: visible !important;
+    margin-bottom: 24px;
+    padding-bottom: 4px;
+    gap: 6px;
+  }
+
+  .nav-tabs .nav-item,
+  .tab-info .nav-tabs > li,
+  .center-tabs .nav-tabs > li {
+    display: inline-block !important;
+    float: none !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+
+  .nav-tabs .nav-link {
+    display: inline-block !important;
+    width: auto !important;
+    padding: 0.45em 0.8em !important;
+    margin: 0 !important;
+    white-space: normal;
+    text-align: center;
+    font-size: 13px !important;
+    line-height: 1.25;
+  }
+}
+
+/* Grid de 2 filas x 3 columnas, iguales en cantidad y anchura.
+   Anula la regla global de "una sola fila" en .nav-tabs. */
+.nav-tabs.nav-tabs-grid-3,
+.tab-info .nav-tabs.nav-tabs-grid-3,
+.center-tabs .nav-tabs.nav-tabs-grid-3,
+.nav-tabs.nav-tabs-grid-4,
+.tab-info .nav-tabs.nav-tabs-grid-4,
+.center-tabs .nav-tabs.nav-tabs-grid-4 {
+  flex-wrap: wrap !important;
+  overflow: visible !important;
+  gap: 10px 14px;
+  border-bottom: none;
+}
+.nav-tabs.nav-tabs-grid-3 .nav-item,
+.tab-info .nav-tabs.nav-tabs-grid-3 > li,
+.center-tabs .nav-tabs.nav-tabs-grid-3 > li {
+  flex: 1 1 calc(33.3333% - 14px) !important;
+  max-width: calc(33.3333% - 14px) !important;
+  min-width: 0 !important;
+}
+.nav-tabs.nav-tabs-grid-4 .nav-item,
+.tab-info .nav-tabs.nav-tabs-grid-4 > li,
+.center-tabs .nav-tabs.nav-tabs-grid-4 > li {
+  flex: 1 1 calc(25% - 14px) !important;
+  max-width: calc(25% - 14px) !important;
+  min-width: 0 !important;
+}
+
+/* Tabs con altura reducida e IGUAL en todos los botones (incluyendo
+   los que envuelven a 2 líneas). */
+.nav-tabs.nav-tabs-short .nav-item {
+  display: flex !important;
+}
+.nav-tabs.nav-tabs-short .nav-link {
+  min-height: 56px !important;
+  height: 100%;
+  padding-top: 0.45em !important;
+  padding-bottom: 0.45em !important;
+  font-size: 13px !important;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+@media only screen and (max-width: 576px) {
+  .nav-tabs,
+  .tab-info .nav-tabs,
+  .center-tabs .nav-tabs {
+    white-space: normal !important;
+    flex-wrap: wrap !important;
+    padding-bottom: 4px;
+    gap: 4px !important;
+  }
+  .nav-tabs .nav-item,
+  .tab-info .nav-tabs > li,
+  .center-tabs .nav-tabs > li {
+    flex: 0 0 auto !important;
+    width: auto !important;
+  }
+  .nav-tabs .nav-link {
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+  }
+}
+
+/* ─── 6. BOTONES DE NAVEGACIÓN (Atrás / Siguiente) ───────────
+   En móvil se mantienen en una sola fila, más pequeños.
+   Si no caben, se habilita scroll horizontal suave.
+──────────────────────────────────────────────────────────── */
+
+@media only screen and (max-width: 600px) {
+  .btn-group {
+    display: flex;
+    flex-wrap: nowrap;           /* una sola fila siempre */
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow-x: auto;            /* scroll si hay muchos botones */
+    -webkit-overflow-scrolling: touch;
+    gap: 0;
+  }
+  .btn-group .btn {
+    flex: 0 0 auto;
+    min-width: 0;
+    font-size: 12px;
+    padding: 6px 8px;
+    white-space: nowrap;
+  }
+}
+
+/* ─── 7. TABLAS ──────────────────────────────────────────────
+   Las tablas de contenido no sobresalen en pantallas pequeñas.
+──────────────────────────────────────────────────────────── */
+
+.table-responsive-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  max-width: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ─── 8. TARJETAS DE CONTENIDO (card) ────────────────────────
+   Margen y padding estandarizados en todas las tarjetas.
+   Padding vertical FORZADO simétrico (top == bottom) en toda card.
+──────────────────────────────────────────────────────────── */
+
+.card {
+  margin-bottom: 20px;
+}
+
+.card .pdd-vertical-30 {
+  padding-top: 30px !important;
+  padding-bottom: 30px !important;
+}
+.card .pdd-vertical-20 {
+  padding-top: 20px !important;
+  padding-bottom: 20px !important;
+}
+.card .pdd-vertical-15 {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+}
+
+@media only screen and (max-width: 768px) {
+  .card .pdd-vertical-30 {
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
+  }
+  .card .pdd-horizon-25 {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+}
+
+/* ─── 9. WIDGET DE PROGRESO ──────────────────────────────────
+   En móvil, las columnas de progreso se apilan.
+──────────────────────────────────────────────────────────── */
+
+@media only screen and (max-width: 768px) {
+  .widget-feed .row .col-lg-8,
+  .widget-feed .row .col-lg-4 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  #circlecontainer {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+  }
+}
+
+/* ─── 10. FOOTER ─────────────────────────────────────────────
+   Responsivo en pantallas pequeñas.
+──────────────────────────────────────────────────────────── */
+
+@media only screen and (max-width: 768px) {
+  .content-footer {
+    padding: 0 12px;
+  }
+  .content-footer .footer .col-4,
+  .content-footer .footer .col-md-4 {
+    text-align: left !important;
+    margin-top: 8px;
+  }
+}
+
+/* ─── 10b. TITULOS Y SUBTITULOS ──────────────────────────────
+   Todos los titulos y subtitulos en negritas. */
+
+h1, h2, h3, h4, h5, h6,
+.card-title,
+.feed-title,
+.feed-subtitle {
+  font-weight: 700 !important;
+}
+
+/* ─── 11. TEXTO BASE ─────────────────────────────────────────
+   Tamaños de fuente más pequeños en pantallas reducidas.
+──────────────────────────────────────────────────────────── */
+
+@media only screen and (max-width: 576px) {
+  p, li {
+    font-size: 16px;
+  }
+  h1 {
+    font-size: 22px;
+  }
+  h2 {
+    font-size: 18px;
+  }
+  h3 {
+    font-size: 16px;
+  }
+}
+
+/* ─── 12. IMÁGENES CENTRADAS EN CONTENIDO ────────────────────
+   Las imágenes de contenido deben estar centradas y no
+   sobrepasar el ancho del contenedor.
+──────────────────────────────────────────────────────────── */
+
+.pdd-horizon-25 img,
+.pdd-vertical-30 img {
+  max-width: 100%;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+/* Preservar layout inline de iconos pequeños */
+.pdd-horizon-25 p img,
+.pdd-vertical-30 p img,
+li img {
+  display: inline;
+  vertical-align: middle;
+  max-width: none; /* los íconos de ≤32px no deben agrandarse */
+}
+
+/* ─── 13. VIDEO WRAPPERS ─────────────────────────────────────
+   Contenedor aspect-ratio para videos responsivos.
+──────────────────────────────────────────────────────────── */
+
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  overflow: hidden;
+}
+
+.video-wrapper iframe,
+.video-wrapper video {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Videos no envueltos: mantener centrado y fluido */
+video:not(.video-wrapper video) {
+  max-width: 100%;
+  height: auto;
+  max-height: 65vh;
+  display: block;
+  margin: 0 auto;
+}
+
+/* ─── 14. HEADER ─────────────────────────────────────────────
+   Logo del header escala correctamente en móvil.
+──────────────────────────────────────────────────────────── */
+
+.header .header-container .nav-right img {
+  max-height: 40px;
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.header .header-container .nav-right > li > a {
+  display: flex;
+  align-items: center;
+  height: 65px;
+}
+
+/* ─── 15. OVERLAY DE BIENVENIDA ──────────────────────────────
+   La imagen de portada de bienvenida escala en móvil.
+──────────────────────────────────────────────────────────── */
+
+@media only screen and (max-width: 768px) {
+  .overlay-dark.bg {
+    background-attachment: scroll !important;
+    min-height: 200px;
+  }
+  .mrg-top-130 {
+    margin-top: 40px !important;
+  }
+}
+
+/* ─── 16. EVITAR DESBORDAMIENTO HORIZONTAL ───────────────────
+   Asegura que nada sobresalga del viewport.
+──────────────────────────────────────────────────────────── */
+
+.main-content,
+.container-fluid {
+  overflow-x: hidden;
+}
+
+/* ─── 16a. QUIZ — centrar y compactar columna de preguntas ──
+   En .quiz-form se centra horizontalmente cada pregunta y se
+   evita el sobrante vertical para que la columna no quede
+   más alta que las imágenes a su derecha.
+──────────────────────────────────────────────────────────── */
+
+.quiz-form .form-check {
+  width: 100%;
+}
+
+.quiz-form .form-check-label {
+  display: inline-block;
+  text-align: left;
+}
+
+.quiz-form .feed-body.form-group {
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .quiz-form {
+    align-self: center;
+  }
+}
+
+/* ─── 16b. TARJETAS DE TECLAS (Teclado / tab-keys-list) ─────
+   Reduce el margen y centra las imágenes del teclado de fondo
+   para que no se estiren al ancho de la columna y no dejen
+   espacio vertical excesivo dentro de cada tarjetita.
+──────────────────────────────────────────────────────────── */
+
+.tab-keys-list > div {
+  padding: 8px 10px !important;
+  margin-bottom: 10px;
+}
+
+.tab-keys-list > div > img {
+  max-width: 220px !important;
+  max-height: 80px !important;
+  width: auto !important;
+  height: auto !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block;
+  object-fit: contain;
+}
+
+/* ─── 17. ATRIBUTOS HTML OBSOLETOS ──────────────────────────
+   Normaliza align="center/left/right" en elementos de contenido
+   para que funcionen igual que text-center/text-left.
+──────────────────────────────────────────────────────────── */
+
+p[align="center"], h1[align="center"], h2[align="center"],
+h3[align="center"], div[align="center"] {
+  text-align: center;
+}
+
+p[align="left"], h1[align="left"], h2[align="left"],
+h3[align="left"], div[align="left"] {
+  text-align: left;
+}
+
+/* Contenedores con align="center" que envuelven imágenes */
+div[align="center"] img {
+  margin-left: auto;
+  margin-right: auto;
+}

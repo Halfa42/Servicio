@@ -1,0 +1,104 @@
+function getPath(){
+    var str=window.location.href;
+    var str_array=str.split('/');
+    var construct=false;
+    var res="";
+    str_array.forEach(element => {
+        if(construct ){
+            res+="../";
+            return;
+        }
+        element=element.toLowerCase();
+        if(element=="html" || element=="src"){
+            construct=true;
+        }
+    });
+    return res;
+}
+
+// Inyecta responsive.css en TODAS las paginas (correcciones globales de
+// responsividad, padding de cards, tabs en una sola fila, etc.)
+(function injectResponsive(){
+    var base = getPath();
+    if (!document.querySelector('link[data-responsive-css]')) {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = base + 'assets/css/responsive.css';
+        link.setAttribute('data-responsive-css', '1');
+        document.head.appendChild(link);
+    }
+})();
+
+// Inyecta el CSS y el JS del layout automatico de 2 columnas SOLO en paginas
+// dentro de modulos/unidades (URL contiene "/modulo"). El resto de paginas
+// (index, creditos, temario, contacto, politicas, objetivos, metodologia,
+// mapa-conceptual) usa layout de 1 columna.
+(function injectTwoColAuto(){
+    var path = window.location.pathname.toLowerCase();
+    if (path.indexOf('/modulo') === -1) return;
+
+    var base = getPath();
+    if (!document.querySelector('link[data-two-col-auto]')) {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = base + 'assets/css/two-col-auto.css';
+        link.setAttribute('data-two-col-auto', '1');
+        document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[data-two-col-auto]')) {
+        var script = document.createElement('script');
+        script.src = base + 'assets/js/two-col-auto.js';
+        script.defer = true;
+        script.setAttribute('data-two-col-auto', '1');
+        document.head.appendChild(script);
+    }
+})();
+
+$(document).ready(function(){
+    //file with relative path to index outside html folder
+    $.get(getPath()+"assets/js/recycled/NavBar.html", function(html_string){
+        $("#sideNav").html(html_string); 
+        $("#sideNav a").each(function() {
+            
+            var _href = this.getAttribute("href"); 
+            if( typeof(_href) != 'undefined' && _href!="" && _href.search(".html")!=-1){
+                $(this).prop("href", getPath()+_href);
+            }
+        });
+        $("div#sideNav > div > div.side-nav-logo > a > div.logo").each(function(){
+            $(this).css("background-image","url("+getPath()+"assets/images/logo/logo.png)");
+        });
+    });
+    $.get(getPath()+"assets/js/recycled/footer.html", function(html_string){
+        $("footer.content-footer").html(html_string);
+        $("footer.content-footer .footer-year").text(new Date().getFullYear());
+        $("footer.content-footer a").each(function() {
+
+            var _href = this.getAttribute("href");
+            if( typeof(_href) != 'undefined' && _href!="" && _href.search(".html")!=-1){
+                $(this).prop("href", getPath()+_href);
+            }
+        });
+    });
+    $.get(getPath()+"assets/js/recycled/headerstart.html", function(html_string){
+        $("div.header.navbar").html(html_string); 
+        $("div.header.navbar a").each(function() {
+            
+            var _href = this.getAttribute("href"); 
+            if( typeof(_href) != 'undefined' && _href!="" && _href.search(".html")!=-1){
+                $(this).prop("href", getPath()+_href);
+            }
+        });
+        $("div.header.navbar img").each(function() {
+            var _href = this.getAttribute("src"); 
+            // Fix any path that contains "assets/" and is not absolute
+            if( typeof(_href) != 'undefined' && _href!="" && _href.search("assets/")!=-1 && _href.search("http")==-1){
+                // Remove existing relative markers to avoid double-prepending
+                var cleanPath = _href.split("assets/").pop();
+                $(this).attr("src", getPath() + "assets/" + cleanPath);
+            }
+        });
+    });
+
+
+});
